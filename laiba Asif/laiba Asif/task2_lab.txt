@@ -1,0 +1,8 @@
+$ sed 's/word1/word2/g' info.txt
+$ sed 's/word1/word2/g' info.txt > customer.txt
+$ sed -i 's/word1/word2/g' info.txt
+$ sed -i -e 's/word1/word2/g' -e 's/xx/yy/g' info.txt
+$ sed -i 's+regex+new-text+g' file.txt
+$ sed '/3rd/s/should/will/' customer.txt
+$ sed '/5th/s/should/will/' customer.txt
+

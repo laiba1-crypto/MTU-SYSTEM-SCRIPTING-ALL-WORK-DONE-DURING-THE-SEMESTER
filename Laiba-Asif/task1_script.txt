@@ -1,0 +1,50 @@
+#!/bin/bash
+
+# Check that two arguments are provided
+if [ $# -ne 2 ]; then
+  echo "Usage: $0 <folder_path> <string_pattern>"
+  exit 1
+fi
+
+# Set the input arguments to variables
+folder_path=$1
+string_pattern=$2
+
+# Check that the provided folder exists
+if [ ! -d $folder_path ]; then
+  echo "Error: $folder_path does not exist or is not a directory"
+  exit 1
+fi
+
+# Initialize array for files with at least two occurrences of the pattern
+declare -a matching_files=()
+
+# Iterate through regular files in the folder
+for file in $(find $folder_path -type f); do
+  # Get the file name
+  file_name=$(basename $file)
+
+  # Get the file size in bytes
+  file_size=$(stat -c%s $file)
+
+  # Count the number of occurrences of the pattern (case insensitive)
+  pattern_count=$(grep -io $string_pattern $file | wc -l)
+
+  # Print the file details to the terminal
+  echo "File name: $file_name"
+  echo "File size: $file_size bytes"
+  echo "Pattern count: $pattern_count"
+
+  # Add the file name to the matching_files array if the pattern appears at least twice
+  if [ $pattern_count -ge 2 ]; then
+    matching_files+=($file_name)
+  fi
+done
+
+# Print the matching file names to the terminal and write them to report.txt
+echo "Matching files:"
+for file in "${matching_files[@]}"; do
+  echo $file
+done > report.txt
+
+echo "Report written to report.txt"

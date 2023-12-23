@@ -1,0 +1,67 @@
+#!/bin/bash
+
+# Check if script is run as root
+if [[ $EUID -ne 0 ]]; then
+   echo "This script must be run as root" 
+   exit 1
+fi
+
+# Function to create user account
+function create_user {
+  username=$1
+  # Check if user already exists
+  if id "$username" >/dev/null 2>&1; then
+    echo "User $username already exists, skipping"
+  else
+    # Create user account and home directory
+    useradd -m "$username"
+    echo "User $username created"
+  fi
+}
+
+# Function to delete user account
+function delete_user {
+  username=$1
+  # Check if user exists
+  if id "$username" >/dev/null 2>&1; then
+    # Delete user account and home directory
+    userdel -r "$username"
+    echo "User $username deleted"
+  else
+    echo "User $username does not exist, skipping"
+  fi
+}
+
+# Check if input file is provided
+if [[ $# -eq 0 ]]; then
+  echo "Please provide input file"
+  exit 1
+fi
+
+# Read input file and create user accounts
+input_file=$1
+while read username; do
+  create_user "$username"
+done < "$input_file"
+
+# Output contents of /etc/passwd and /home directories for verification
+echo "Contents of /etc/passwd:"
+cat /etc/passwd
+echo "Contents of /home directory:"
+ls /home
+
+# Ask user if they want to delete the created accounts
+read -p "Do you want to delete the created accounts? [y/n] " answer
+if [[ "$answer" == "y" ]]; then
+  # Delete user accounts and home directories
+  while read username; do
+    delete_user "$username"
+  done < "$input_file"
+  # Output contents of /etc/passwd and /home directories for verification
+  echo "Contents of /etc/passwd after deletion:"
+  cat /etc/passwd
+  echo "Contents of /home directory after deletion:"
+  ls /home
+else
+  echo "Exiting without deleting accounts"
+fi

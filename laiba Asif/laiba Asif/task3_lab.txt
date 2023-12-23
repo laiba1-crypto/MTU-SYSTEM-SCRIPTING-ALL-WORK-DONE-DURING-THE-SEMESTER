@@ -1,0 +1,17 @@
+results = {}
+ while True: user_input = input("Enter a PPS number or stop or  dope or clean: ") 
+if 
+user_input.lower() == "stop": 
+break 
+elif user_input.lower() == "dope": positive_results = sum([1 for result in results.values()
+ if 
+result == "positive"]) print(f"Total number of positive results: {positive_results}")
+ elif
+ user_input.lower() == "clean": negative_results = sum([1 for result in results.values()
+ if 
+result == "negative"]) print(f"Total number of negative results: {negative_results}") 
+elif 
+user_input in results: print(f"PPS number: {user_input}, Test result: {results[user_input]}") 
+else: store_result = input("Sorry PPS number not found. Do you want to store it? (y/n) ")
+ if store_result.lower() == "y": test_result = input("Enter test result (positive/negative): ") 
+results[user_input] = test_result else: continue print("Program ended.")

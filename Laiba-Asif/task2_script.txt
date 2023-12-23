@@ -1,0 +1,78 @@
+#!/bin/bash
+
+# Function to query county-cork.txt file and output only towns starting with Ba or Mi
+function cork_query {
+    # Read file into array
+    mapfile -t lines < county-cork.txt
+    
+    # Loop through array and output towns starting with Ba or Mi
+    for line in "${lines[@]}"; do
+        if [[ $line =~ ^Ba|^Mi ]]; then
+            echo $line
+        fi
+    done
+}
+
+# Function to query advert.txt file for accommodations within user's budget
+function advert_query {
+    # Prompt user for budget price
+    read -p "Enter your budget price (between 800 and 1300): " budget
+    
+    # Enforce budget price range
+    while [[ $budget -lt 800 || $budget -gt 1300 ]]; do
+        read -p "Invalid input. Enter your budget price (between 800 and 1300): " budget
+    done
+    
+    # Output accommodations within budget
+    awk -v budget=$budget '$3 <= budget' advert.txt
+}
+
+# Function to create and write to a file until user enters "stop"
+function write_to_file {
+    # Prompt user for filename
+    read -p "Enter file name: " filename
+    
+    # Create file if it doesn't exist
+    touch $filename
+    
+    # Loop through user input and write to file until "stop" is entered
+    while true; do
+        read -p "Enter text to write (type 'stop' to finish): " text
+        if [[ $text == "stop" ]]; then
+            echo "Writing finished"
+            break
+        fi
+        echo $text >> $filename
+    done
+}
+
+# Main menu loop
+while true; do
+    echo "Main menu:"
+    echo "1. Cork Query"
+    echo "2. Advert Query"
+    echo "3. Write to file"
+    echo "4. Terminate"
+    
+    # Prompt user for menu choice
+    read -p "Enter your choice: " choice
+    
+    case $choice in
+        1)
+            cork_query
+            ;;
+        2)
+            advert_query
+            ;;
+        3)
+            write_to_file
+            ;;
+        4)
+            echo "Goodbye!"
+            exit 0
+            ;;
+        *)
+            echo "Invalid choice. Please enter a number between 1 and 4."
+            ;;
+    esac
+done

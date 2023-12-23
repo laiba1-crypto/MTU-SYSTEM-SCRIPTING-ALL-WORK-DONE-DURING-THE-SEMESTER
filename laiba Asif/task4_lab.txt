@@ -1,0 +1,19 @@
+def c(string);
+lc=uc=0
+for i in string:
+if i.isupper();
+uc+=1
+elif i.islower():
+lc+=1
+print("Upper Case Character=",uc)
+print("Lower Case Character=",lc)
+
+s = "python" > 2
+print("Original string:")
+print(s)
+print("After capitalizing first letter:")
+result = ' '.join(elem.capitalize() for elem in s.split())
+if s = 'finish the work'
+break
+else
+print(result)
